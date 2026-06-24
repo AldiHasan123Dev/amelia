@@ -1,0 +1,121 @@
+.dataTables_length label, .dataTables_filter label, .dataTables_filter input, .dataTables_info, .dataTables_paginate, .card-header button{
+    font-size: .7rem;
+}
+form input.form-control, form select, form label, form textarea{
+    font-size: .8rem;
+}
+.form-control{
+    border-radius: 0% !important;
+}
+button.no-attr{
+    outline: none;
+    background: none;
+    border: none;
+}
+.content-main{
+    position: relative;
+    padding: 20px;
+}
+.horizontal-menu{
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+    background-color: #fff;
+}
+.sub-menu .btn-link{
+    outline: none;
+    border: none;
+    background: none;
+    text-decoration: none;
+    font-size: .8rem;
+}
+
+.sub-menu{
+    padding: 10px 0px;
+}
+.sub-menu .btn-link.active{
+    color: rgba(56, 116, 255, 1) !important;
+    border-bottom: 2px solid rgba(56, 116, 255, 1) ;
+}
+.sub-menu .btn-link:hover{
+    background-color: #dee1ea;
+}
+
+.select2-selection__rendered{
+    font-size: .7rem;
+}
+
+.select2-container--default .select2-results__option--highlighted.select2-results__option--selectable{
+    font-size: .7rem;
+}
+
+.select2-container--default .select2-search--dropdown .select2-search__field{
+    font-size: .7rem;
+}
+
+.select2-results__option--selectable{
+    font-size: .7rem;
+}
+
+.card .item, .card span{
+    font-size: .7rem;
+}
+
+.ui-jqgrid .ui-jqgrid-htable .ui-th-div, .ui-jqgrid .ui-jqgrid-btable tbody tr.jqgrow td, .ui-th-ltr, .ui-jqgrid .ui-jqgrid-htable th.ui-th-ltr, .ui-jqgrid .ui-jqgrid-pager .ui-paging-info, .ui-jqgrid .ui-jqgrid-toppager .ui-paging-info, .ui-jqgrid .ui-pager-control .ui-pager-table td{
+    font-size: .7rem;
+}
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default{
+    background: transparent !important;
+}
+.ui-widget-content{
+    border: 1px solid #000 !important;
+    background: #fff;
+    color: #333;
+}
+.ui-jqgrid tr.ui-search-toolbar th{
+    padding: 5px !important;
+}
+.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight {
+    border: 1px solid #000000 !important;
+    background: #00a0ff !important;
+    color: #fff !important;
+}
+.ui-jqgrid .ui-jqgrid-htable tr.ui-jqgrid-labels, .ui-th-ltr, .ui-jqgrid .ui-jqgrid-htable th.ui-th-ltr{
+    background-color: lightgray !important;
+}
+
+.ui-jqgrid tr.ui-search-toolbar td input{
+    padding: 3px !important;
+    width: 70px !important;
+}
+.ui-jqgrid td.ui-search-input, .ui-jqgrid td.ui-search-clear, .ui-jqgrid .ui-search-table .ui-search-oper{
+    width: 70px !important;
+}
+.autocomplete {
+    position: relative;
+    display: inline-block;
+}
+.autocomplete-items {
+    position: absolute;
+    border: 1px solid #d4d4d4;
+    border-bottom: none;
+    border-top: none;
+    z-index: 99;
+    /*position the autocomplete items to be the same width as the container:*/
+    top: 100%;
+    left: 0;
+    right: 0;
+}
+.autocomplete-items div {
+    padding: 10px;
+    cursor: pointer;
+    background-color: #fff;
+    border-bottom: 1px solid #d4d4d4;
+}
+.autocomplete-items div:hover {
+    /*when hovering an item:*/
+    background-color: #e9e9e9;
+}
+.autocomplete-active {
+    /*when navigating through the items using the arrow keys:*/
+    background-color: DodgerBlue !important;
+    color: #ffffff;
+}
