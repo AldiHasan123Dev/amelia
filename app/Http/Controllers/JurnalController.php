@@ -2129,7 +2129,7 @@ public function editOne(Jurnal $jurnal)
                 : collect();
             
             // Cache jurnal berdasarkan kriteria, dengan pengecekan agar cache tetap efisien
-            $jurnal = Cache::remember("jurnal_{$coa->id}_{$startDate}_{$endDate}_" . implode('_', $order->toArray()), 60, function () use ($coa_id, $order, $startDate, $endDate) {
+            $jurnal = Cache::remember("jurnal_{$coa->id}_{$startDate}_{$endDate}_" . implode('_', $order->toArray()), 60, function () use ($coa, $order, $startDate, $endDate) {
                 return $order->isNotEmpty()
                     ? Jurnal::where('coa_id', $coa->id)
                         ->whereIn('order_id', $order)
