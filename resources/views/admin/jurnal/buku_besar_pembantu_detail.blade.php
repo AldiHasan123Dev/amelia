@@ -147,7 +147,7 @@
                                                             Invoice Xpdc
                                                             @endif
                                                         </th>
-                                                        @if ($subjek == 'customer_xpdc' && $coa_id == 46 || $subjek == 'customer_trucking' && $coa_id == 47)
+                                                        @if ($subjek == 'customer_xpdc' && $coa_id->coa_ras == 46 || $subjek == 'customer_trucking' && $coa_id->coa_ras == 47)
                                                         <th class="text-center">Pph</th>
                                                         @endif
                                                         <th class="text-center">Debit</th>
@@ -187,30 +187,30 @@
                                                                 {{ $j['invoice'] ?: '-' }}
                                                                 @endif
                                                             </td>
-                                                            @if (($subjek == 'customer_xpdc' && $coa_id == 46) || ($subjek == 'customer_trucking' && $coa_id == 47))
+                                                            @if (($subjek == 'customer_xpdc' && $coa_id->coa_ras == 46) || ($subjek == 'customer_trucking' && $coa_id->coa_ras == 47))
                                                             <td class="text-end">{{ $j['pph'] ? number_format($j['pph'], 2, ',', '.') : 0 }}</td>
                                                         @endif
                                                         
                                                     @php
                                                         $isRelevantSubjek = 
-                                                            ($subjek == 'customer_xpdc' && $coa_id == 46) || 
-                                                            ($subjek == 'customer_trucking' && $coa_id == 47) ||
-                                                            ($subjek == 'agen' && $coa_id == 63) ||
-                                                            ($subjek == 'vendor' && $coa_id == 131 ||
+                                                            ($subjek == 'customer_xpdc' && $coa_id->coa_ras == 46) || 
+                                                            ($subjek == 'customer_trucking' && $coa_id->coa_ras == 47) ||
+                                                            ($subjek == 'agen' && $coa_id->coa_ras == 63) ||
+                                                            ($subjek == 'vendor' && $coa_id->coa_ras == 131 ||
                                                             $subjek == 'lain-lain');
 
                                                         $selisih = abs($j['debit'] - $j['credit']) > 0;
 
                                                         // Aturan pembanding debit/credit berdasarkan coa_id
                                                         $validPerbandingan = false;
-                                                        if ($coa_id == 63 || $coa_id == 131) {
+                                                        if ($coa_id->coa_ras == 63 || $coa_id->coa_ras == 131) {
                                                             $validPerbandingan = $j['credit'] > $j['debit'];
                                                         } else {
                                                             $validPerbandingan = $j['debit'] > $j['credit'];
                                                         }
 
                                                         $validPerbandingan1 = false;
-                                                        if ($coa_id == 63 || $coa_id == 131) {
+                                                        if ($coa_id->coa_ras == 63 || $coa_id->coa_ras == 131) {
                                                             $validPerbandingan1 = $j['credit'] < $j['debit'];
                                                         } else {
                                                             $validPerbandingan1 = $j['debit'] < $j['credit'];
@@ -235,7 +235,7 @@
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
-                                                        @if ($subjek =='customer_xpdc' && $coa_id == 46 || $subjek =='customer_trucking' && $coa_id == 47)     
+                                                        @if ($subjek =='customer_xpdc' && $coa_id->coa_ras == 46 || $subjek =='customer_trucking' && $coa_id->coa_ras == 47)     
                                                         <td class="text-end" colspan="6"><b>TOTAL</b></td>
                                                         <td class="text-end"><b
                                                                 id="debit-total">{{ number_format($totalDebit, 2, ',', '.') }}</b>
@@ -321,7 +321,7 @@
         </script>
       <script>
         $(document).ready(function() {
-            @if ($subjek == 'vendor' && $coa_id == 131)
+            @if ($subjek == 'vendor' && $coa_id->coa_ras == 131)
                 var orderConfig = [[2, "desc"]];
                 var columnDefsConfig = [{ "orderable": true, "targets": [2] }];
             @else

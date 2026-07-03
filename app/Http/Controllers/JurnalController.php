@@ -2129,19 +2129,20 @@ public function editOne(Jurnal $jurnal)
                 : collect();
             
             // Cache jurnal berdasarkan kriteria, dengan pengecekan agar cache tetap efisien
-            $jurnal = Cache::remember("jurnal_{$coa->id}_{$startDate}_{$endDate}_" . implode('_', $order->toArray()), 60, function () use ($coa, $order, $startDate, $endDate) {
-                return $order->isNotEmpty()
-                    ? Jurnal::where('coa_id', $coa->id)
-                        ->whereIn('order_id', $order)
-                        ->whereNull('order_trucking_id')
-                        ->whereNull('invoice_trucking')
-                        ->whereNull('invoice_vendor')
-                        ->whereNull('invoice_agen')
-                        ->whereBetween('created_at', [$startDate, $endDate])
-                        ->whereNotNull('invoice')
-                        ->get(['order_id', 'debit', 'credit'])
-                    : collect();
-            });
+            $jurnal = Cache::remember("jurnal_{$coa->id}_{$startDate}_{$endDate}_" . implode('_', $order->toArray()), 60, function () use ($coa, $coa, $order, $startDate, $endDate) {
+    return $order->isNotEmpty()
+        ? Jurnal::where('coa_id', $coa->id)
+            ->whereIn('order_id', $order)
+            ->whereNull('order_trucking_id')
+            ->whereNull('invoice_trucking')
+            ->whereNull('invoice_vendor')
+            ->whereNull('invoice_agen')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->whereNotNull('invoice')
+            ->get(['order_id', 'debit', 'credit'])
+        : collect();
+});
+
             
             // Proses data untuk hasil akhir
             $finalData = $jurnal->map(function ($item) use ($customer) {
@@ -2963,6 +2964,7 @@ $ket_c = $group->where('credit', '>', 0)
     $groupedJurnal=[]; 
     $customerPelayaran = null;
     $tipe = in_array(substr($coa_id, 0, 1), ['2', '3', '5']) ? 'C' : 'D';
+    $coa_id = COA::where('coa_ras',$coa_id)->first();
     $startDate = '2022-01-01';
     $endDate = Carbon::create($year, $month)->endOfMonth()->endOfDay();
 
@@ -2974,7 +2976,7 @@ $ket_c = $group->where('credit', '>', 0)
         $transaksi = Transaksi::whereIn('order_id', $order)->pluck('pph', 'order_id');
 
         // Query jurnal
-        $jurnal = Jurnal::where('coa_id', $coa_id)
+        $jurnal = Jurnal::where('coa_id', $coa_id->id)
             ->whereIn('order_id', $order)
             ->whereNull('order_trucking_id')
             ->whereNull('invoice_trucking')
@@ -2985,7 +2987,7 @@ $ket_c = $group->where('credit', '>', 0)
             ->orderBy('invoice')
             ->get(['order_id', 'debit', 'credit', 'nama', 'nomor', 'created_at', 'invoice']);
         $nomor = $jurnal->pluck('nomor');
-        $pph =  Jurnal::where('coa_id',52)
+        $pph =  Jurnal::where('coa_id',10)
         ->whereIn('nomor',$nomor)
         ->pluck('nomor')->unique();
         // Kelompokkan jurnal berdasarkan invoice
@@ -3007,7 +3009,7 @@ $ket_c = $group->where('credit', '>', 0)
                 'keterangan' => $items->pluck('nama')->unique()->implode('<br>'), // Gabungkan semua keterangan
             ];
             // Tambahkan pph jika kondisi terpenuhi
-            if ($subjek == 'customer_xpdc' && $coa_id == 46) {
+            if ($subjek == 'customer_xpdc' && $coa_id->coa_ras == 46) {
                 $orderIds = $items->pluck('order_id')->unique();
                 $data['pph'] = $orderIds
                     ->map(fn($id) => isset($transaksi[$id]) ? round($transaksi[$id]) : null)
@@ -3036,7 +3038,7 @@ $ket_c = $group->where('credit', '>', 0)
         // Query jurnal
         // Ambil jurnal yang sesuai coa_id, belum terkait invoice_trucking, dan berdasarkan invoice_vendor
         if($customer == 'Lain-lain'){
-            $jurnal = Jurnal::where('coa_id', $coa_id)
+            $jurnal = Jurnal::where('coa_id', $coa_id->id)
             ->where(function ($query) use ($order) {
                 $query->whereIn('order_id', $order)
                       ->orWhereNull('order_id');
@@ -3045,7 +3047,7 @@ $ket_c = $group->where('credit', '>', 0)
             ->whereBetween('created_at', [$startDate, $endDate])
             ->get(['order_id', 'debit', 'credit', 'nama', 'nomor', 'created_at', 'invoice_external']);
         } else {
-            $jurnal = Jurnal::where('coa_id', $coa_id)
+            $jurnal = Jurnal::where('coa_id', $coa_id->id)
             ->whereIn('order_id',$order)
             ->whereNotNull('invoice_external')
             ->whereBetween('created_at', [$startDate, $endDate])
@@ -3076,7 +3078,7 @@ $ket_c = $group->where('credit', '>', 0)
                 'keterangan' => $items->pluck('nama')->unique()->implode('<br>'), // Gabungkan semua keterangan
             ];
             // Tambahkan pph jika kondisi terpenuhi
-            if ($subjek == 'customer_xpdc' && $coa_id == 46) {
+            if ($subjek == 'customer_xpdc' && $coa_id->coa_ras == 46) {
                 $orderIds = $items->pluck('order_id')->unique();
                 $data['pph'] = $orderIds
                     ->map(fn($id) => isset($transaksi[$id]) ? round($transaksi[$id]) : null)
@@ -3103,7 +3105,7 @@ $ket_c = $group->where('credit', '>', 0)
         $customers = Agen::where('nama', $customer)->pluck('nama', 'id');
         $order = Order::whereIn('agen_id', $customers->keys())->pluck('invoice_agen','id');
         // Query jurnal
-        $jurnal = Jurnal::where('coa_id', $coa_id)
+        $jurnal = Jurnal::where('coa_id', $coa_id->id)
         ->whereNull('order_trucking_id')
         ->whereNull('invoice_trucking')
         ->whereNull('invoice_vendor')
@@ -3155,13 +3157,13 @@ $ket_c = $group->where('credit', '>', 0)
         $transaksi = TransaksiTrucking::whereIn('customer_id',$customers->keys())->pluck('pph', 'order_trucking_id');
 
         // Query jurnal
-        $jurnal = Jurnal::where('coa_id', $coa_id)
+        $jurnal = Jurnal::where('coa_id', $coa_id->id)
             ->whereIn('invoice_vendor', $invoice)
             ->whereNull('invoice_trucking')
             ->whereBetween('created_at', [$startDate, $endDate])
             ->get(['order_trucking_id', 'debit', 'credit', 'nama', 'nomor', 'created_at','invoice_vendor']);
             $nomor = $jurnal->pluck('nomor');
-            $pph =  Jurnal::where('coa_id',52)
+            $pph =  Jurnal::where('coa_id',10)
                 ->whereIn('nomor',$nomor)
                 ->pluck('nomor')->unique();
         // Kelompokkan jurnal berdasarkan invoice
@@ -3179,7 +3181,7 @@ $ket_c = $group->where('credit', '>', 0)
                 'credit' => $items->sum('credit'),
                 'keterangan' => $items->pluck('nama')->unique()->implode('<br>') , // Gabungkan semua keterangan
             ];
-            if ($subjek == 'customer_trucking' && $coa_id == 47) {
+            if ($subjek == 'customer_trucking' && $coa_id->coa_ras == 47) {
                 $orderIds = $items->pluck('order_trucking_id')->unique();
                 $data['pph'] = $orderIds
                     ->map(fn($id) => isset($transaksi[$id]) ? round($transaksi[$id]) : null)
@@ -3211,14 +3213,14 @@ $ket_c = $group->where('credit', '>', 0)
         $transaksi = TransaksiTrucking::whereIn('customer_id',$customers->keys())->pluck('pph', 'order_trucking_id');
 
         // Query jurnal
-        $jurnal = Jurnal::where('coa_id', $coa_id)
+        $jurnal = Jurnal::where('coa_id', $coa_id->id)
             ->whereIn('order_trucking_id', $order)
             ->whereNull('invoice_vendor')
             ->whereNotNull('invoice_trucking')
             ->whereBetween('created_at', [$startDate, $endDate])
             ->get(['order_id', 'order_trucking_id', 'debit', 'credit', 'nama', 'nomor', 'created_at', 'invoice_trucking','invoice_vendor']);
             $nomor = $jurnal->pluck('nomor');
-            $pph =  Jurnal::where('coa_id',52)
+            $pph =  Jurnal::where('coa_id',10)
                 ->whereIn('nomor',$nomor)
                 ->pluck('nomor')->unique();
         // Kelompokkan jurnal berdasarkan invoice
@@ -3236,7 +3238,7 @@ $ket_c = $group->where('credit', '>', 0)
                 'credit' => $items->sum('credit'),
                 'keterangan' => $items->pluck('nama')->unique()->implode('<br>') , // Gabungkan semua keterangan
             ];
-            if ($subjek == 'customer_trucking' && $coa_id == 47) {
+            if ($subjek == 'customer_trucking' && $coa_id->coa_ras == 47) {
                 $orderIds = $items->pluck('order_trucking_id')->unique();
                 $data['pph'] = $orderIds
                     ->map(fn($id) => isset($transaksi[$id]) ? round($transaksi[$id]) : null)
@@ -3269,7 +3271,7 @@ $ket_c = $group->where('credit', '>', 0)
         // Ambil semua no BG dari relasi
         $no_bgs = $pelayaran->bg(); // atau $pelayaran->bg_list jika pakai accessor
 
-        $jurnal = Jurnal::where('coa_id', $coa_id)
+        $jurnal = Jurnal::where('coa_id', $coa_id->id)
             ->whereIn('no_bg', $no_bgs) // Menggunakan array $customer
             ->whereBetween('created_at', [$startDate, $endDate])
             ->get(['order_id', 'debit', 'credit', 'nama', 'nomor', 'created_at', 'no_bg']);
