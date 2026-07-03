@@ -2142,6 +2142,7 @@ public function editOne(Jurnal $jurnal)
             ->get(['order_id', 'debit', 'credit'])
         : collect();
 });
+
             
             // Proses data untuk hasil akhir
             $finalData = $jurnal->map(function ($item) use ($customer) {
