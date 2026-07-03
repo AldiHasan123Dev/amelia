@@ -2143,6 +2143,7 @@ public function editOne(Jurnal $jurnal)
                     : collect();
             });
             
+            
             // Proses data untuk hasil akhir
             $finalData = $jurnal->map(function ($item) use ($customer) {
                 return [
