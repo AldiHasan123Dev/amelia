@@ -2129,7 +2129,7 @@ public function editOne(Jurnal $jurnal)
                 : collect();
             
             // Cache jurnal berdasarkan kriteria, dengan pengecekan agar cache tetap efisien
-            $jurnal = Cache::remember("jurnal_{$coa->id}_{$startDate}_{$endDate}_" . implode('_', $order->toArray()), 60, function () use ($coa, $coa, $order, $startDate, $endDate) {
+            $jurnal = Cache::remember("jurnal_{$coa->id}_{$startDate}_{$endDate}_" . implode('_', $order->toArray()), 60, function () use ($coa_id, $coa, $order, $startDate, $endDate) {
     return $order->isNotEmpty()
         ? Jurnal::where('coa_id', $coa->id)
             ->whereIn('order_id', $order)
@@ -3269,7 +3269,7 @@ $ket_c = $group->where('credit', '>', 0)
             return response()->json(['error' => 'Pelayaran tidak ditemukan'], 404);
         }
         // Ambil semua no BG dari relasi
-        $no_bgs = $pelayaran->bg(); // atau $pelayaran->bg_list jika pakai accessor
+        $no_bgs = $pelayaran->bg(); // atau $pelayaran->bg_list jika pakai accessor 
 
         $jurnal = Jurnal::where('coa_id', $coa_id->id)
             ->whereIn('no_bg', $no_bgs) // Menggunakan array $customer
