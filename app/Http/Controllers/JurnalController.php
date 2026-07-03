@@ -2129,19 +2129,19 @@ public function editOne(Jurnal $jurnal)
                 : collect();
             
             // Cache jurnal berdasarkan kriteria, dengan pengecekan agar cache tetap efisien
-            $jurnal = Cache::remember("jurnal_{$coa->id}_{$startDate}_{$endDate}_" . implode('_', $order->toArray()), 60, function () use ($coa, $order, $startDate, $endDate) {
-                return $order->isNotEmpty()
-                    ? Jurnal::where('coa_id', $coa->id)
-                        ->whereIn('order_id', $order)
-                        ->whereNull('order_trucking_id')
-                        ->whereNull('invoice_trucking')
-                        ->whereNull('invoice_vendor')
-                        ->whereNull('invoice_agen')
-                        ->whereBetween('created_at', [$startDate, $endDate])
-                        ->whereNotNull('invoice')
-                        ->get(['order_id', 'debit', 'credit'])
-                    : collect();
-            });
+            $jurnal = Cache::remember("jurnal_{$coa->id}_{$startDate}_{$endDate}_" . implode('_', $order->toArray()), 60, function () use ($coa_id, $coa, $order, $startDate, $endDate) {
+    return $order->isNotEmpty()
+        ? Jurnal::where('coa_id', $coa->id)
+            ->whereIn('order_id', $order)
+            ->whereNull('order_trucking_id')
+            ->whereNull('invoice_trucking')
+            ->whereNull('invoice_vendor')
+            ->whereNull('invoice_agen')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->whereNotNull('invoice')
+            ->get(['order_id', 'debit', 'credit'])
+        : collect();
+});
             
             // Proses data untuk hasil akhir
             $finalData = $jurnal->map(function ($item) use ($customer) {
