@@ -661,13 +661,16 @@ class JurnalController extends Controller
                     $nomor = sprintf('%03d', $no) . '/' . $data['tipe'] . '-' . $this->sno . '/' . date('y', strtotime($data['created_at']));
                 }
                 if ($data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
+                    $coaDebit = COA::find($data['debit_coa_id'][$i]);
+                    $coaCredit = COA::find($data['credit_coa_id'][$i]);
                     $isSangu = stripos($name, 'sangu sopir') !== false 
                             || stripos($name, 'sangu kuli') !== false;
-
-
-                    $orderTruckingId = ($data['debit_coa_id'][$i] == 61 && $isSangu)
+                    $orderTruckingId = ($coaDebit->coa_ras == 61 && $isSangu)
                         ? $order_trucking_id
                         : null;
+                    // $orderTruckingId = ($data['debit_coa_id'][$i] == 61 && $isSangu)
+                    //     ? $order_trucking_id
+                    //     : null;
 
                     $relasiDebit = $data['relasi'][$i] ?? ($invoice_agen === null && $invoice === null ? $nomor : $nomor);
                     $relasiCredit = $data['relasi'][$i] ?? ($invoice_agen === null && $invoice === null  ? $nomor : $nomor);
@@ -710,13 +713,18 @@ class JurnalController extends Controller
                     ]);
                 } else {
                     if ($data['debit_coa_id'][$i]) {
+                        $coaDebit = COA::find($data['debit_coa_id'][$i]);
                         $isSangu = stripos($name, 'sangu sopir') !== false 
                             || stripos($name, 'sangu kuli') !== false;
+                        
+                        $orderTruckingId = ($coaDebit->coa_ras == 61 && $isSangu)
+                             ? $order_trucking_id
+                             : null;
 
+                        // $orderTruckingId = ($data['debit_coa_id'][$i] == 61 && $isSangu)
+                        //     ? $order_trucking_id
+                        //     : null;
 
-                        $orderTruckingId = ($data['debit_coa_id'][$i] == 61 && $isSangu)
-                            ? $order_trucking_id
-                            : null;
                         $relasiDebit = $data['relasi'][$i] ?? ($invoice_agen === null && $invoice === null ? $nomor : $nomor);
                         $jurnal_model->create([
                             'tipe' => $data['tipe'],
@@ -738,13 +746,18 @@ class JurnalController extends Controller
                         ]);
                     }
                     if ($data['credit_coa_id'][$i]) {
+                        $coaDebit = COA::find($data['debit_coa_id'][$i]);
                         $isSangu = stripos($name, 'sangu sopir') !== false 
                             || stripos($name, 'sangu kuli') !== false;
 
-
-                        $orderTruckingId = ($data['debit_coa_id'][$i] == 61 && $isSangu)
+                        $orderTruckingId = ($coaDebit == 61 && $isSangu)
                             ? $order_trucking_id
                             : null;
+
+                        // $orderTruckingId = ($data['debit_coa_id'][$i] == 61 && $isSangu)
+                        //     ? $order_trucking_id
+                        //     : null;
+
                         $relasiCredit = $data['relasi'][$i] ?? ($invoice_agen === null && $invoice === null  ? $nomor : $nomor);
                         $jurnal_model->create([
                             'tipe' => $data['tipe'],
@@ -925,6 +938,7 @@ class JurnalController extends Controller
                 }
                 if ($data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
                     // Tentukan nilai relasi untuk debit dan kredit
+                    $coaDebit = COA::find($data['debit_coa_id'][$i]);
                     $relasiDebit = $data['relasi'][$i] ?? ($invoice === null && $invoice_vendor === null ? $nomor : $nomor);
                     $relasiCredit = $data['relasi'][$i] ?? ($invoice === null && $invoice_vendor === null  ? $nomor : $nomor);
                     // Buat entri untuk debit terlebih dahulu
@@ -938,7 +952,8 @@ class JurnalController extends Controller
                         'order_trucking_id' => $order_trucking ?? $order_vendor,
                         'nomor' => $nomor,
                         'nama' => $name,
-                        'order_id' => (($data['debit_coa_id'][$i] == 31 && $order_trucking) || $order_vendor) ? $order_ids : null,
+                        'order_id' => (($coaDebit->coa_ras == 31 && $order_trucking) || $order_vendor) ? $order_ids : null,
+                        // 'order_id' => (($data['debit_coa_id'][$i] == 31 && $order_trucking) || $order_vendor) ? $order_ids : null,
                         'debit' => $data['amount'][$i],
                         'created_at' => $data['created_at'],
                         'relasi' => $relasiDebit,
@@ -953,7 +968,8 @@ class JurnalController extends Controller
                         'invoice_vendor' => !str_contains($invoice, 'RAS-LT') ? $invoice_vendor  : null,
                         'invoice_trucking' => str_contains($invoice, 'RAS-LT') ? $invoice  : null,
                         'nopol' => $nopol,
-                        'order_id' => (($data['debit_coa_id'][$i] == 31 && $order_trucking) || $order_vendor) ? $order_ids : null,
+                        // 'order_id' => (($data['debit_coa_id'][$i] == 31 && $order_trucking) || $order_vendor) ? $order_ids : null,
+                        'order_id' => (($coaDebit == 31 && $order_trucking) || $order_vendor) ? $order_ids : null,
                         'container' => $container,
                         'order_trucking_id' => $order_trucking ?? $order_vendor,
                         'nomor' => $nomor,
@@ -978,7 +994,8 @@ class JurnalController extends Controller
                             'nopol' => $nopol,
                             'container' => $container,
                             'order_trucking_id' => $order_trucking ?? $order_vendor,
-                            'order_id' => (($data['debit_coa_id'][$i] == 31 && $order_trucking) || $order_vendor) ? $order_ids : null,
+                            // 'order_id' => (($data['debit_coa_id'][$i] == 31 && $order_trucking) || $order_vendor) ? $order_ids : null,
+                            'order_id' => (($coaDebit->coa_ras == 31 && $order_trucking) || $order_vendor) ? $order_ids : null,
                             'nomor' => $nomor,
                             'nama' => $name,
                             'debit' => $data['amount'][$i],
@@ -1459,11 +1476,11 @@ if (!empty($dataToInsert)) {
     });
 
 $voucherDeb = $jurnalQuery
-    ->whereIn('coa_id', [16, 45, 175])
+    ->whereIn('coa_id', [3, 5, 175])
     ->sum('debit');
 
 $voucherCre = $jurnalQuery
-    ->whereIn('coa_id', [16, 45, 175])
+    ->whereIn('coa_id', [3, 5, 175])
     ->sum('credit');
 
 $voucher = abs($voucherDeb - $voucherCre);
