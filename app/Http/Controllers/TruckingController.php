@@ -425,7 +425,8 @@ $month_roman  = $roman_numerals[$month_number];
                                     'invoice_trucking' => str_contains($invoice, 'RAS-LT') ? $invoice : null,
                                 ]);
                             }
-                            if ($item->coa_credit_id == 87) {
+                            // if ($item->coa_credit_id == 87) {
+                            if ($item->coa_credit_id == 209) {
                                 foreach ($orders as $ord) {
                                     Jurnal::create([
                                         'coa_id' => $item->coa_credit_id,
@@ -445,7 +446,7 @@ $month_roman  = $roman_numerals[$month_number];
                                     ]);
                                 }
                             }
-                            if ($item->coa_credit_id == 28) {
+                            if ($item->coa_credit_id == 22) {
                                 foreach ($orders as $ord) {
                                     if ($ord->tagihans->count() > 0) {
                                         foreach ($ord->tagihans as $tag) {
@@ -456,7 +457,7 @@ $month_roman  = $roman_numerals[$month_number];
     str_contains($tag->nama, 'Ambil Empty') ||
     str_contains($tag->nama, 'Bongkar Full')
 ) {
-    $coa_id = 87;
+    $coa_id = 209;
 } else {
     $coa_id = $item->coa_credit_id;
 }
@@ -515,7 +516,8 @@ $month_roman  = $roman_numerals[$month_number];
                             $pembayar = $ord->order ? $ord->order->tarif->customer->nama : '-';
                             $tujuan_trucking = $ord->tarif->tujuan->tujuanInfo->nama;
                             Jurnal::create([
-                                'coa_id' => 31,
+                                // 'coa_id' => 31,
+                                'coa_id' => 27,
                                 'order_trucking_id' => $ord->id,
                                 'order_id' => $ord->order_id,
                                 'nomor' => $nomor,
@@ -532,7 +534,8 @@ $month_roman  = $roman_numerals[$month_number];
                                 'nopol' => $ord->kendaraan->nopol ?? null,
                             ]);
                             JurnalSample::create([
-                                'coa_id' => 31,
+                                 // 'coa_id' => 31,
+                                'coa_id' => 27,
                                 'order_trucking_id' => $ord->id,
                                 'order_id' => $ord->order_id,
                                 'nomor' => $nomor,
@@ -551,7 +554,8 @@ $month_roman  = $roman_numerals[$month_number];
 
                             foreach ($ord->tagihans as $tag) {
                                 Jurnal::create([
-                                    'coa_id' => 31,
+                                    // 'coa_id' => 31,
+                                    'coa_id' => 27,
                                     'order_trucking_id' => $ord->id,
                                     'order_id' => $ord->order_id,
                                     'nomor' => $nomor,
@@ -568,7 +572,8 @@ $month_roman  = $roman_numerals[$month_number];
                                     'nopol' => $ord->kendaraan->nopol ?? null,
                                 ]);
                                 JurnalSample::create([
-                                    'coa_id' => 31,
+                                     // 'coa_id' => 31,
+                                    'coa_id' => 27,
                                     'order_trucking_id' => $ord->id,
                                     'order_id' => $ord->order_id,
                                     'nomor' => $nomor,
@@ -591,7 +596,8 @@ $month_roman  = $roman_numerals[$month_number];
                         }
 
                         Jurnal::create([
-                            'coa_id' => 131,
+                            // 'coa_id' => 131,
+                            'coa_id' => 35,
                             'order_trucking_id' => $ord->id,
                             'nomor' => $nomor,
                             'nama' => 'Hutang Trucking ' . $request->pengirim . ' INV. ' . $invoice,
@@ -605,7 +611,8 @@ $month_roman  = $roman_numerals[$month_number];
                             'invoice_trucking' => str_contains($invoice, 'RAS-LT') ? $invoice : null,
                         ]);
                         JurnalSample::create([
-                            'coa_id' => 131,
+                            // 'coa_id' => 131,
+                            'coa_id' => 35,
                             'order_trucking_id' => $ord->id,
                             'nomor' => $nomor,
                             'nama' => 'Piutang Trucking ' . $request->pengirim . ' INV. ' . $invoice,
@@ -691,7 +698,8 @@ $month_roman  = $roman_numerals[$month_number];
             $pembayar = $ord->order ? $ord->order->tarif->customer->nama : '-';
             $tujuan_trucking = $ord->tarif->tujuan->tujuanInfo->nama;
             Jurnal::create([
-                'coa_id' => 31,
+                // 'coa_id' => 31,
+                'coa_id' => 27,
                 'order_trucking_id' => $ord->id,
                 'nomor' => $nomor,
                 'nama' => 'Biaya Trucking ' . $pembayar . ' ' . $shipment . ' ' . $tujuan_trucking,
@@ -707,7 +715,8 @@ $month_roman  = $roman_numerals[$month_number];
                 'nopol' => $ord->kendaraan->nopol ?? null,
             ]);
             JurnalSample::create([
-                'coa_id' => 31,
+                // 'coa_id' => 31,
+                'coa_id' => 27,
                 'order_trucking_id' => $ord->id,
                 'nomor' => $nomor,
                 'nama' => 'Pendapatan Trucking ' . $pembayar . ' ' . $shipment . ' ' . $tujuan_trucking,
@@ -725,7 +734,8 @@ $month_roman  = $roman_numerals[$month_number];
 
             foreach ($ord->tagihans as $tag) {
                 Jurnal::create([
-                    'coa_id' => 31,
+                    // 'coa_id' => 31,
+                    'coa_id' => 27,
                     'order_trucking_id' => $ord->id,
                     'nomor' => $nomor,
                     'nama' => $tag->nama,
@@ -741,7 +751,8 @@ $month_roman  = $roman_numerals[$month_number];
                     'nopol' => $ord->kendaraan->nopol ?? null,
                 ]);
                 JurnalSample::create([
-                    'coa_id' => 31,
+                    // 'coa_id' => 31,
+                    'coa_id' => 27,
                     'order_trucking_id' => $ord->id,
                     'nomor' => $nomor,
                     'nama' => $tag->nama,
@@ -763,7 +774,8 @@ $month_roman  = $roman_numerals[$month_number];
         }
 
         Jurnal::create([
-            'coa_id' => 131,
+            // 'coa_id' => 131,
+            'coa_id' => 37,
             'order_trucking_id' => $ord->id,
             'nomor' => $nomor,
             'nama' => 'Hutang Trucking ' . $trx->pengirim . ' INV. ' . $trx->invoice,
@@ -777,7 +789,8 @@ $month_roman  = $roman_numerals[$month_number];
             'invoice_trucking' => str_contains($trx->invoice, 'RAS-LT') ? $trx->invoice : null,
         ]);
         JurnalSample::create([
-            'coa_id' => 131,
+            // 'coa_id' => 131,
+            'coa_id' => 37,
             'order_trucking_id' => $ord->id,
             'nomor' => $nomor,
             'nama' => 'Piutang Trucking ' . $trx->pengirim . ' INV. ' . $trx->invoice,
