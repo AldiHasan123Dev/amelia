@@ -27,14 +27,12 @@ class CustomerController extends Controller
         if ($request->has('cari') && $request->has('marketing')) {
             $query->where('nama', 'like', "%$request->cari%")
                   ->where('marketing_id', $request->marketing)
-                  ->whereNotNull('npwp')
-                  ->whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(npwp, '.', ''), '-', ''), ' ', ''), '0', '') != ''");
+                  ->whereNotNull('npwp');
 
             $counts = $query->count();
         } elseif ($request->has('cari')) {
             $query->where('nama', 'like', "%$request->cari%")
-                  ->whereNotNull('npwp')
-                  ->whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(npwp, '.', ''), '-', ''), ' ', ''), '0', '') != ''");
+                  ->whereNotNull('npwp');
 
             $counts = $query->count();
         } else {
