@@ -203,8 +203,7 @@ class OrderController extends Controller
             $data['penerimabl'] = Agen::where('nama',$request->agen_id)->first()->nama ?? null;
         }
        $year = date('Y');
-       $num = Order::whereRaw('LEFT(job, 4) = ?', [$year])
-            ->max('no');
+       $num = Order::whereYear('created_at',date('Y'))->max('no');
         $setting = Setting::find(1);
         $data['barang_id'] = $barang->id;
         $data['no'] = $num+1;
