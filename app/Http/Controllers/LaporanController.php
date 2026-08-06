@@ -1292,7 +1292,7 @@ if ($tipe == 'inv') {
     foreach ($allCoaIds as $coaId) {
 
         // Query debit
-        $debitQuery = Jurnal::where('coa_id', $coaId);
+        $debitQuery = Jurnal::where('coa_id', $coaId);   
 
         // Khusus COA ID 31
         if ($coaId == 31) {
@@ -1389,48 +1389,101 @@ if ($tipe == 'inv') {
             $data = Order::where('job','like',$job.'%')->get();
         }
         $ids = $data->pluck('id')->toArray();
+        $coaRas31 = Coa::where('coa_ras',31)->first();
+        $coaRas140 = Coa::where('coa_ras',140)->first();
+        $coaRas133 = Coa::where('coa_ras',133)->first();
+        $coaRas134 = Coa::where('coa_ras',134)->first();
+        $coaRas135 = Coa::where('coa_ras',135)->first();
+        $coaRas76 = Coa::where('coa_ras',76)->first();
+        $coaRas81 = Coa::where('coa_ras',81)->first();
         $jurnalDebit = Jurnal::whereIn('order_id', $ids)
-            ->where('coa_id', 31)
+            ->where('coa_id', $coaRas31->id)
             ->sum('debit');
 
         $jurnalKredit = Jurnal::whereIn('order_id', $ids)
-            ->where('coa_id', 31)
+            ->where('coa_id', $coaRas31->id)
             ->sum('credit');
 
         $jurnal161 = $jurnalDebit - $jurnalKredit;
 
         // Ambil data jurnal
+        // $jurnalList161 = Jurnal::whereIn('order_id', $ids)
+        //     ->where('coa_id', 31)
+        //     ->get();
+
         $jurnalList161 = Jurnal::whereIn('order_id', $ids)
-            ->where('coa_id', 31)
+            ->where('coa_id', $coaRas31->id)
             ->get();
 
-        $jurnalDebitLain = Jurnal::whereIn('order_id', $ids)
-        ->where(function ($q) {
-            $q->where('coa_id', 140)
-            ->orWhere('coa_id', 133)
-            ->orWhere('coa_id',134)
-            ->orWhere('coa_id',135)
-            ->orWhere('coa_id',76)
-            ->orWhere('coa_id',81); // tambahkan orWhere di sini
-        })
-        ->sum('debit');
+        // $jurnalDebitLain = Jurnal::whereIn('order_id', $ids)
+        // ->where(function ($q) {
+        //     $q->where('coa_id', 140)
+        //     ->orWhere('coa_id', 133)
+        //     ->orWhere('coa_id',134)
+        //     ->orWhere('coa_id',135)
+        //     ->orWhere('coa_id',76)
+        //     ->orWhere('coa_id',81); // tambahkan orWhere di sini
+        // })
+        // ->sum('debit');
 
-        $jurnalKreditLain = Jurnal::whereIn('order_id', $ids)
-            ->where(function ($q) {
-                $q->where('coa_id', 140)
-                ->orWhere('coa_id', 133)
-                ->orWhere('coa_id',134)
-                ->orWhere('coa_id',135)
-                ->orWhere('coa_id',76)
-                ->orWhere('coa_id',81); // tambahkan orWhere di sini
+         $jurnalDebitLain = Jurnal::whereIn('order_id', $ids)
+    ->where(function ($q) use (
+        $coaRas140,
+        $coaRas133,
+        $coaRas134,
+        $coaRas135,
+        $coaRas76,
+        $coaRas81
+    ) {
+        $q->where('coa_id', $coaRas140->id)
+            ->orWhere('coa_id', $coaRas133->id)
+            ->orWhere('coa_id', $coaRas134->id)
+            ->orWhere('coa_id', $coaRas135->id)
+            ->orWhere('coa_id', $coaRas76->id)
+            ->orWhere('coa_id', $coaRas81->id);
+    })
+    ->sum('debit');
+
+        // $jurnalKreditLain = Jurnal::whereIn('order_id', $ids)
+        //     ->where(function ($q) {
+        //         $q->where('coa_id', 140)
+        //         ->orWhere('coa_id', 133)
+        //         ->orWhere('coa_id',134)
+        //         ->orWhere('coa_id',135)
+        //         ->orWhere('coa_id',76)
+        //         ->orWhere('coa_id',81); // tambahkan orWhere di sini
+        //     })
+        //     ->sum('credit');
+
+         $jurnalKreditLain = Jurnal::whereIn('order_id', $ids)
+                    ->where(function ($q) use (
+                    $coaRas140,
+                    $coaRas133,
+                    $coaRas134,
+                    $coaRas135,
+                    $coaRas76,
+                    $coaRas81
+                ) {
+                $q->where('coa_id', $coaRas140->id)
+                ->orWhere('coa_id', $coaRas133->id)
+                ->orWhere('coa_id', $coaRas134->id)
+                ->orWhere('coa_id', $coaRas135->id)
+                ->orWhere('coa_id', $coaRas76->id)
+                ->orWhere('coa_id', $coaRas81->id); // tambahkan orWhere di sini
             })
             ->sum('credit');
 
-        $triggerOmz = Jurnal::whereIn('order_id', $ids)
-    ->whereIn('coa_id', [140,133,134,135,76,81])
+    //     $triggerOmz = Jurnal::whereIn('order_id', $ids)
+    // ->whereIn('coa_id', [140,133,134,135,76,81])
+    // ->where('debit', '>', 0)
+    // ->distinct('order_id')
+    // ->count('order_id'); 
+     $triggerOmz = Jurnal::whereIn('order_id', $ids)
+    ->whereIn('coa_id', [$coaRas140->id,$coaRas133->id,$coaRas134->id,$coaRas135->id,$coaRas76->id,$coaRas81->id])
     ->where('debit', '>', 0)
     ->distinct('order_id')
-    ->count('order_id'); // lebih tepat hitung order_id
+    ->count('order_id'); 
+    // lebih tepat hitung order_id
 
     $showGenerateOmzBtn = $triggerOmz;
 

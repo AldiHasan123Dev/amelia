@@ -24,6 +24,16 @@ class OmsetController extends Controller
         $end = request('start') + request('end');
         $data = array();
         $model = new Omset();
+        $coaRas8 = COA::where('coa_ras', 8)->first();
+        $coaRas93 = COA::where('coa_ras', 93)->first();
+        $coaRas38 = COA::where('coa_ras', 38)->first();
+        $coaRas31 = COA::where('coa_ras', 31)->first();
+        $coaRas133 = COA::where('coa_ras', 133)->first();
+        $coaRas134 = COA::where('coa_ras', 134)->first();
+        $coaRas135 = COA::where('coa_ras', 135)->first();
+        $coaRas140 = COA::where('coa_ras', 140)->first();
+        $coaRas76 = COA::where('coa_ras', 76)->first();
+        $coaRas81 = COA::where('coa_ras', 81)->first();
         $coa_id = COA::whereIn('coa_ras', [93])->pluck('id')->toArray();
         if(count($coa_id) != 8){
             $coa_id = [93];
@@ -31,9 +41,12 @@ class OmsetController extends Controller
         $orders = Order::whereIn('id',$ids)->where('lock_omset', 1)->get();
         if(request('is_pra')){
             $orders = Order::whereIn('id',$ids)->where('lock_omset',0)->get();
-            $coa_id = COA::whereIn('coa_ras', [38, 31, 133, 134, 135, 140, 76, 81])->pluck('id')->toArray();
+            // $coa_id = COA::whereIn('coa_ras', [38, 31, 133, 134, 135, 140, 76, 81])->pluck('id')->toArray();
+            $coa_id = COA::whereIn('coa_ras', [$coaRas38, $coaRas31, 
+            $coaRas133, $coaRas134, $coaRas135, $coaRas140, $coaRas76, $coaRas81])->pluck('id')->toArray();
             if(count($coa_id) != 8){
-                $coa_id = [38,31,133,134,135,140,76,81];
+                $coa_id = [$coaRas38, $coaRas31, 
+            $coaRas133, $coaRas134, $coaRas135, $coaRas140, $coaRas76, $coaRas81];
             }
             $model = new PraOmset();
         }
@@ -952,6 +965,12 @@ public function syncJurnalBalik2()
     $id = request('id');
     $ids = array_slice($id, request('start'), request('end'));
     $end = request('start') + request('end');
+    $coaRas133 = COA::where('coa_ras', 133)->first();
+    $coaRas134 = COA::where('coa_ras', 134)->first();
+    $coaRas135 = COA::where('coa_ras', 135)->first();
+    $coaRas140 = COA::where('coa_ras', 140)->first();
+    $coaRas76 = COA::where('coa_ras', 76)->first();
+    $coaRas81 = COA::where('coa_ras', 81)->first();
 
     // Ambil order yang lock_omset 1 atau 2
     $orders = Order::whereIn('id', $id)
@@ -961,9 +980,14 @@ public function syncJurnalBalik2()
     $orderIds = $orders->pluck('id');
 
     // Ambil jurnal debit tertentu
+    // $jurnals = Jurnal::whereIn('order_id', $orderIds)
+    //     ->where('debit', '>', 0)
+    //     ->whereIn('coa_id', [133=, 134, 135, 140, 76, 81])
+    //     ->pluck('id');
+
     $jurnals = Jurnal::whereIn('order_id', $orderIds)
         ->where('debit', '>', 0)
-        ->whereIn('coa_id', [133, 134, 135, 140, 76, 81])
+        ->whereIn('coa_id', [$coaRas133->id, $coaRas134->id, $coaRas135->id, $coaRas140->id, $coaRas76->id, $coaRas81->id])
         ->pluck('id');
 
     $month = request('month');
@@ -1030,12 +1054,12 @@ public function syncJurnalBalik2()
             $biayaList = Jurnal::whereIn('id', $valid_jurnal_ids)
                 ->where('debit', '>', 0)
                 ->get();
-
             foreach ($biayaList as $j_) {
 
                 if (is_null($j_->jurnal_balik)) {
 
-                    if (in_array($j_->coa_id, [133, 134, 135, 140, 76, 81])) {
+                    // if (in_array($j_->coa_id, [133, 134, 135, 140, 76, 81])) {
+                      if (in_array($j_->coa_id, [$coaRas133->id, $coaRas134->id, $coaRas135->id, $coaRas140->id, $coaRas76->id, $coaRas81->id])) {
 
                         $data = $j_->toArray();
                         unset($data['id']);
@@ -1133,6 +1157,9 @@ public function syncJurnalBalik2()
     $slice = array_slice($ids, $start, $limit);
     $end   = $start + $limit;
 
+    $coaRas31 = COA::where('coa_ras',31)->first();
+    $coaRas93 = COA::where('coa_ras',93)->first();
+
     $month = request('month');
     $year  = request('year');
 
@@ -1156,6 +1183,7 @@ public function syncJurnalBalik2()
         ->get()
         ->groupBy('order_id');
 
+
     /** ===============================
      * 3️⃣ JURNAL BALIK
      * =============================== */
@@ -1178,7 +1206,7 @@ if (!$balik) {
 }
 
 
-    DB::transaction(function () use ($orders, $jurnals, $balik) {
+    DB::transaction(function () use ($orders, $jurnals, $balik, $coaRas31,$coaRas93) {
 
         foreach ($orders as $order) {
 
@@ -1189,7 +1217,7 @@ if (!$balik) {
 
             foreach ($items as $j_) {
 
-                if ($j_->coa_id != 31) continue;
+                if ($j_->coa_id != $coaRas31->id) continue;
 
                 $timestamp = Carbon::parse($balik->tanggal)->startOfDay()->format('Y-m-d H:i:s');
 
@@ -1200,7 +1228,7 @@ if (!$balik) {
                  * DEBIT
                  * ===================== */
                 $debit = array_merge($base, [
-                    'coa_id'        => 93,
+                    'coa_id'        => $coaRas93->id,
                     'debit'         => $j_->debit,
                     'credit'        => 0,
                     'tipe'          => 'OMZ',
@@ -1218,7 +1246,7 @@ if (!$balik) {
                  * KREDIT
                  * ===================== */
                 Jurnal::create(array_merge($debit, [
-                    'coa_id' => 31,
+                    'coa_id' => $coaRas31->id,
                     'debit'  => 0,
                     'credit' => $j_->debit,
                 ]));
