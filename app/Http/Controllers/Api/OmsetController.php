@@ -34,6 +34,7 @@ class OmsetController extends Controller
         $coaRas140 = COA::where('coa_ras', 140)->first();
         $coaRas76 = COA::where('coa_ras', 76)->first();
         $coaRas81 = COA::where('coa_ras', 81)->first();
+        dd($coaRas8, $coaRas93, $coaRas38, $coaRas31, $coaRas133, $coaRas134, $coaRas135, $coaRas140, $coaRas76, $coaRas81);
         $coa_id = COA::whereIn('coa_ras', [93])->pluck('id')->toArray();
         if(count($coa_id) != 8){
             $coa_id = [93];
