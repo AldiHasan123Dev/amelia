@@ -617,11 +617,11 @@ $totalLB = $data->sum(function($o) {
 
                         @endphp
                         <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
-                            <li class="list-group-item fw-bold">Total 1.6.1</li>
+                            <li class="list-group-item fw-bold">Total 1.5.1</li>
                             <li class="list-group-item fw-bold">{{  number_format(($jurnal161 ?? 0),0,',','.') }}</li>
                         </ul>
                          <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
-                            <li class="list-group-item fw-bold">Total selain COA 1.6.1</li>
+                            <li class="list-group-item fw-bold">Total selain COA 1.5.1</li>
                             <li class="list-group-item fw-bold">{{  number_format(($jurnalSelain161 ?? 0),0,',','.') }}</li>
                         </ul>
                         <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
@@ -643,7 +643,7 @@ $totalLB = $data->sum(function($o) {
     <div class="card border-0 shadow-sm">
         <div class="card-header py-2 px-3 text-white" style="background: linear-gradient(90deg, #007bff, #0056b3);">
             <h6 class="mb-0 fw-semibold">
-                <i class="bi bi-bar-chart-fill me-2"></i>Rincian Jurnal - COA 1.6.1
+                <i class="bi bi-bar-chart-fill me-2"></i>Rincian Jurnal - COA 1.5.1
             </h6>
         </div>
 

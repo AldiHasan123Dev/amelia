@@ -34,7 +34,6 @@ class OmsetController extends Controller
         $coaRas140 = COA::where('coa_ras', 140)->first();
         $coaRas76 = COA::where('coa_ras', 76)->first();
         $coaRas81 = COA::where('coa_ras', 81)->first();
-        dd($coaRas8, $coaRas93, $coaRas38, $coaRas31, $coaRas133, $coaRas134, $coaRas135, $coaRas140, $coaRas76, $coaRas81);
         $coa_id = COA::whereIn('coa_ras', [93])->pluck('id')->toArray();
         if(count($coa_id) != 8){
             $coa_id = [93];
@@ -43,13 +42,13 @@ class OmsetController extends Controller
         if(request('is_pra')){
             $orders = Order::whereIn('id',$ids)->where('lock_omset',0)->get();
             // $coa_id = COA::whereIn('coa_ras', [38, 31, 133, 134, 135, 140, 76, 81])->pluck('id')->toArray();
-            $coa_id = COA::whereIn('coa_ras', [$coaRas38, $coaRas31, 
-            $coaRas133, $coaRas134, $coaRas135, $coaRas140, $coaRas76, $coaRas81])->pluck('id')->toArray();
+            $coa_id = COA::whereIn('id', [$coaRas38->id, $coaRas31->id, 
+            $coaRas133->id, $coaRas134->id, $coaRas135->id, $coaRas140->id, $coaRas76->id, $coaRas81->id])->pluck('id')->toArray();
             if(count($coa_id) != 8){
-                $coa_id = [$coaRas38, $coaRas31, 
-            $coaRas133, $coaRas134, $coaRas135, $coaRas140, $coaRas76, $coaRas81];
-            }
-            $model = new PraOmset();
+                $coa_id = [$coaRas38->id, $coaRas31->id, 
+                $coaRas133->id, $coaRas134->id, $coaRas135->id, $coaRas140->id, $coaRas76->id, $coaRas81->id];
+                }
+                $model = new PraOmset();
         }
         foreach ($orders as $idx => $order) {
         $cbm = $order->tarif->satuanInfo->nama ?? '-';
@@ -68,68 +67,68 @@ class OmsetController extends Controller
           $data[$idx]['trucking'] = 0;
           $data[$idx]['j_trucking'] = '[]';
 
-$tipe = '';
-if ($order->truckingInfo && $order->trucking == 'XPDC') {
-    // Cek apakah customer R1
-    if ($order->truckingInfo->customer->r1 == 1) {
-        $tipe = 'R1';
-    }
-    // Jika bukan R1, cek apakah R2
-    elseif ($order->truckingInfo->customer->r2 == 1) {
-        $tipe = 'R2';
-    } else {
-        $tipe = $order->truckingInfo->kendaraan->milik ?? '';
-    }
+        $tipe = '';
+        if ($order->truckingInfo && $order->trucking == 'XPDC') {
+            // Cek apakah customer R1
+            if ($order->truckingInfo->customer->r1 == 1) {
+                $tipe = 'R1';
+            }
+            // Jika bukan R1, cek apakah R2
+            elseif ($order->truckingInfo->customer->r2 == 1) {
+                $tipe = 'R2';
+            } else {
+                $tipe = $order->truckingInfo->kendaraan->milik ?? '';
+            }
 
-    if ($tipe === 'R1' || strtolower($tipe) === 'vendor') {
-        $data[$idx]['trucking'] = Jurnal::where('order_id', $order->id)
-            ->whereIn('coa_id', $coa_id)
-            ->where(function ($q) {
-                $q->whereRaw("LOWER(nama) LIKE '%biaya truck luar%'")
-                    ->orWhereRaw("LOWER(nama) LIKE '%biaya trucking%'")
-                    ->orWhereRaw("LOWER(nama) LIKE '%tb/tl%'");
-            })
-            ->whereRaw("LOWER(nama) NOT LIKE '%biaya trucking banjarmasin%'") 
-            ->whereRaw("LOWER(nama) NOT LIKE '%biaya trucking pod%'") 
-            ->sum('debit')
-            - Jurnal::where('order_id', $order->id)
-            ->whereIn('coa_id', $coa_id)
-            ->where(function ($q) {
-                $q->whereRaw("LOWER(nama) LIKE '%biaya truck luar%'")
-                    ->orWhereRaw("LOWER(nama) LIKE '%biaya trucking%'")
-                    ->orWhereRaw("LOWER(nama) LIKE '%tb/tl%'");
-            })
-            ->whereRaw("LOWER(nama) NOT LIKE '%biaya trucking banjarmasin%'") 
-            ->whereRaw("LOWER(nama) NOT LIKE '%biaya trucking pod%'")
-            ->sum('credit');
+        if ($tipe === 'R1' || strtolower($tipe) === 'vendor') {
+            $data[$idx]['trucking'] = Jurnal::where('order_id', $order->id)
+                ->whereIn('coa_id', $coa_id)
+                ->where(function ($q) {
+                    $q->whereRaw("LOWER(nama) LIKE '%biaya truck luar%'")
+                        ->orWhereRaw("LOWER(nama) LIKE '%biaya trucking%'")
+                        ->orWhereRaw("LOWER(nama) LIKE '%tb/tl%'");
+                })
+                ->whereRaw("LOWER(nama) NOT LIKE '%biaya trucking banjarmasin%'") 
+                ->whereRaw("LOWER(nama) NOT LIKE '%biaya trucking pod%'") 
+                ->sum('debit')
+                - Jurnal::where('order_id', $order->id)
+                ->whereIn('coa_id', $coa_id)
+                ->where(function ($q) {
+                    $q->whereRaw("LOWER(nama) LIKE '%biaya truck luar%'")
+                        ->orWhereRaw("LOWER(nama) LIKE '%biaya trucking%'")
+                        ->orWhereRaw("LOWER(nama) LIKE '%tb/tl%'");
+                })
+                ->whereRaw("LOWER(nama) NOT LIKE '%biaya trucking banjarmasin%'") 
+                ->whereRaw("LOWER(nama) NOT LIKE '%biaya trucking pod%'")
+                ->sum('credit');
 
-        $data[$idx]['j_trucking'] = Jurnal::where('order_id', $order->id)
-            ->whereIn('coa_id', $coa_id)
-            ->where(function ($q) {
-                $q->whereRaw("LOWER(nama) LIKE '%biaya truck luar%'")
-                    ->orWhereRaw("LOWER(nama) LIKE '%biaya trucking%'")
-                    ->orWhereRaw("LOWER(nama) LIKE '%tb/tl%'");
-            })
-            ->whereRaw("LOWER(nama) NOT LIKE '%biaya trucking banjarmasin%'")
-            ->whereRaw("LOWER(nama) NOT LIKE '%biaya trucking pod%'")
-            ->pluck('id')->toJson();
-    }
+            $data[$idx]['j_trucking'] = Jurnal::where('order_id', $order->id)
+                ->whereIn('coa_id', $coa_id)
+                ->where(function ($q) {
+                    $q->whereRaw("LOWER(nama) LIKE '%biaya truck luar%'")
+                        ->orWhereRaw("LOWER(nama) LIKE '%biaya trucking%'")
+                        ->orWhereRaw("LOWER(nama) LIKE '%tb/tl%'");
+                })
+                ->whereRaw("LOWER(nama) NOT LIKE '%biaya trucking banjarmasin%'")
+                ->whereRaw("LOWER(nama) NOT LIKE '%biaya trucking pod%'")
+                ->pluck('id')->toJson();
+        }
 
-    if ($tipe == 'R2') {
-        $data[$idx]['trucking'] =
-            ($order->truckingInfo->tarif->tarif ?? 0) +
-            // ($order->truckingInfo->tb_tl ?? 0) +
-            // ($order->truckingInfo->tambah_isi ?? 0) +
-            // ($order->truckingInfo->tambah_solar ?? 0) +
-            ($order->truckingInfo->stappel ?? 0) +
-            ($order->truckingInfo->lain_lain ?? 0);
-        $data[$idx]['j_trucking'] = '[]';
-    }
-} else {
-    // Kondisi jika tidak ada truckingInfo atau trucking bukan XPDC
-    $data[$idx]['trucking'] = 0;
-    $data[$idx]['j_trucking'] = '[]';
-}
+        if ($tipe == 'R2') {
+                $data[$idx]['trucking'] =
+                    ($order->truckingInfo->tarif->tarif ?? 0) +
+                    // ($order->truckingInfo->tb_tl ?? 0) +
+                    // ($order->truckingInfo->tambah_isi ?? 0) +
+                    // ($order->truckingInfo->tambah_solar ?? 0) +
+                    ($order->truckingInfo->stappel ?? 0) +
+                    ($order->truckingInfo->lain_lain ?? 0);
+                $data[$idx]['j_trucking'] = '[]';
+        }
+        } else {
+            // Kondisi jika tidak ada truckingInfo atau trucking bukan XPDC
+            $data[$idx]['trucking'] = 0;
+            $data[$idx]['j_trucking'] = '[]';
+        }
 
             $data[$idx]['job_slip_pod'] = Jurnal::where('order_id', $order->id)
                 ->whereIn('coa_id', $coa_id)
@@ -804,6 +803,9 @@ $data[$idx]['j_ut'] = Jurnal::where('order_id', $order->id)
     $limit = (int) request('end', 10);
     $end   = $start + $limit;
 
+    $coaRas31 = COA::where('coa_ras',31)->first();
+    $coaRas93 = COA::where('coa_ras',93)->first();
+
     $month = request('month');
     $year  = request('year');
 
@@ -882,7 +884,8 @@ $data[$idx]['j_ut'] = Jurnal::where('order_id', $order->id)
 
                 foreach ($biaya as $j_) {
 
-                    if ($j_->coa_id != 31) continue;
+                    // if ($j_->coa_id != 31) continue;
+                    if ($j_->coa_id != $coaRas31->id) continue;
 
                     // ===============================
                     // BELUM ADA JURNAL BALIK
@@ -894,7 +897,7 @@ $data[$idx]['j_ut'] = Jurnal::where('order_id', $order->id)
 
                         // DEBIT
                         $data['jurnal_balik'] = $j_->id;
-                        $data['coa_id']       = 31;
+                        $data['coa_id']       = $coaRas31->id;
                         $data['debit']        = $j_->credit;
                         $data['credit']       = 0;
                         $data['tipe']         = 'OMZ';
@@ -911,7 +914,7 @@ $data[$idx]['j_ut'] = Jurnal::where('order_id', $order->id)
                         ]);
 
                         // CREDIT
-                        $data['coa_id'] = 93;
+                        $data['coa_id'] = $coaRas93->id;
                         $data['debit']  = 0;
                         $data['credit'] = $j_->credit;
                         Jurnal::create($data);
@@ -1183,15 +1186,15 @@ public function syncJurnalBalik2()
         ->whereNull('jurnal_balik') // 🔒 anti duplicate
         ->get()
         ->groupBy('order_id');
-
-
-    /** ===============================
-     * 3️⃣ JURNAL BALIK
-     * =============================== */
-    $balik = JurnalBalik::where('bulan', $month)
-    ->where('tahun', $year)
-    ->where('tipe', 'xpdc')
-    ->first();
+        
+        
+        /** ===============================
+         * 3️⃣ JURNAL BALIK
+         * =============================== */
+        $balik = JurnalBalik::where('bulan', $month)
+        ->where('tahun', $year)
+        ->where('tipe', 'xpdc')
+        ->first();
 
 if (!$balik) {
     $last = Carbon::create($year, $month, 1)->endOfMonth();
