@@ -63,7 +63,7 @@
     <div class="card">
         <div class="card-body">
             {{-- Bagian Atas --}}
-            <div class="section-title">Cek Jurnal COA 1.6.1 yang tidak memiliki job</div>
+            <div class="section-title">Cek Jurnal COA 1.5.1 yang tidak memiliki job</div>
 
             {{-- Filter Kedua --}}
             <div class="row g-3">
