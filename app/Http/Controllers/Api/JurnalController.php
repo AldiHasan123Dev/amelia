@@ -259,7 +259,7 @@ if ($noJob) {
         $query->whereBetween('nomor', [$nomorS, $nomorE])
               ->whereNull('order_id')
               ->whereNull('order_trucking_id')
-              ->where('coa_id', 31)
+              ->where('coa_id', 27)
               ->whereYear('created_at', $tahun);
 
     // Jika hanya $nomorS yang ada
@@ -267,7 +267,7 @@ if ($noJob) {
         $query->where('nomor', 'like', '%' . $nomorS . '%')
               ->whereNull('order_id')
               ->whereNull('order_trucking_id')
-              ->where('coa_id', 31)
+              ->where('coa_id', 27)
               ->whereYear('created_at', $tahun);
 
     // Jika hanya $nomorE yang ada
@@ -275,7 +275,7 @@ if ($noJob) {
         $query->where('nomor', 'like', '%' . $nomorE . '%')
               ->whereNull('order_id')
               ->whereNull('order_trucking_id')
-              ->where('coa_id', 31)
+              ->where('coa_id', 27)
               ->whereYear('created_at', $tahun);
 
     // Jika keduanya null → tidak ada where nomor, hanya filter tahun
@@ -283,7 +283,7 @@ if ($noJob) {
         $tes = $query->whereYear('created_at', $tahun ?? date('Y'))
               ->whereNull('order_id')
               ->whereNull('order_trucking_id')
-              ->where('coa_id', 31);
+              ->where('coa_id', 27);
     }
 }
 
