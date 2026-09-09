@@ -975,6 +975,7 @@ public function syncJurnalBalik2()
     $coaRas140 = COA::where('coa_ras', 140)->first();
     $coaRas76 = COA::where('coa_ras', 76)->first();
     $coaRas81 = COA::where('coa_ras', 81)->first();
+    $coaRas93 = COA::where('coa_ras', 93)->first();
 
     // Ambil order yang lock_omset 1 atau 2
     $orders = Order::whereIn('id', $id)
@@ -1070,7 +1071,7 @@ public function syncJurnalBalik2()
 
                         // Debit
                         $data['jurnal_balik'] = $j_->id;
-                        $data['coa_id'] = 93;
+                        $data['coa_id'] = $coaRas93->id;
                         $data['debit'] = $j_->debit;
                         $data['credit'] = 0;
                         $data['tipe'] = "OMZ";
