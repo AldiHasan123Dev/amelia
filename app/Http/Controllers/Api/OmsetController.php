@@ -861,7 +861,7 @@ $data[$idx]['j_ut'] = Jurnal::where('order_id', $order->id)
     // ===============================
     // 4️⃣ TRANSACTION
     // ===============================
-    DB::transaction(function () use ($orders, $jurnals, $balik, $columns) {
+    DB::transaction(function () use ($orders, $jurnals, $balik, $columns,$coaRas31) {
 
         foreach ($orders as $order) {
 

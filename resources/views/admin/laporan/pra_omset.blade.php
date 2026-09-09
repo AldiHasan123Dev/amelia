@@ -1142,8 +1142,8 @@
                     // ❌ Backend kirim gagal
                     if (response === 'error') {
                         alert("❌ Sinkronisasi jurnal balik GAGAL!");
-                        location.reload();
-                        return;
+                            location.reload();
+                            return;
                     }
 
                     // ✅ Selesai
@@ -1186,6 +1186,7 @@
                     }
                     if (response === 'complete') {
                         alert("✅ SINKRONISASI JURNAL BALIK BERHASIL!");
+                        location.reload();
                     } else {
                         syncJurnalBalikAction2(response, 50);
                     }
