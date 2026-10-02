@@ -369,19 +369,6 @@
             </div>
         </div>
     </div>
-
-     <div class="container mt-5">
-        <div class="card">
-            <div class="card-body">
-                {{-- Filter Kedua --}}
-                <div class="section-title">Rekap Piutang Invoice Baru</div>
-                 <div class="table-wrapper">
-                    <table id="jqGrid10"></table>
-                    <div id="jqGridPager10"></div>
-                </div>
-            </div>
-        </div>
-     </div>
 @endsection
 
 
