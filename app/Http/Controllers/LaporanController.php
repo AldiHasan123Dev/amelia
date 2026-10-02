@@ -63,11 +63,12 @@ class LaporanController extends Controller
     $tglInvFilter = $request->input('tgl_inv');
     $customersFilter = $request->input('customers');
     $invFilter = $request->input('inv');
+    $coaRas46 = COA::where('coa_ras', 46)->first();
 
     // Ambil total debit per invoice
     $jurnalInvX = Jurnal::withTrashed()
         ->select('order_id', 'invoice_external', \DB::raw('SUM(debit) as total_debit'))
-        ->where('coa_id', 46)
+        ->where('coa_id', $coaRas46->id)
         ->whereNull('deleted_at')
         ->where('debit', '!=', 0)
         ->whereNotNull('invoice_external')
@@ -77,7 +78,7 @@ class LaporanController extends Controller
 
     // Ambil total credit dan daftar tanggal bayar per invoice
     $jurnals = Jurnal::withTrashed()
-        ->where('coa_id', 46)
+        ->where('coa_id', $coaRas46->id)
         ->whereNull('deleted_at')
         ->where('credit', '!=', 0)
         ->whereNotNull('invoice_external')
@@ -203,6 +204,7 @@ $invoiceDate = Carbon::parse($invoiceDates)->subDay();
 
     public function exportRekapData(Request $request)
 {
+    $coaRas46 = COA::where('coa_ras', 46)->first();
     $orders = Order::with([
         'tarif.customer:id,nama,top,marketing_id,cs_id',
         'tarif.customer.cs:id,name',
@@ -213,7 +215,7 @@ $invoiceDate = Carbon::parse($invoiceDates)->subDay();
                 ->select('id', 'job', 'total', 'pph', 'tanggal_kirim');
         },
         'jurnals' => function ($query) {
-            $query->where('coa_id', 46)
+            $query->where('coa_id', $coaRas46->id)
                 ->where(function ($q) {
                     $q->where('debit', '!=', 0)
                       ->orWhere('credit', '!=', 0);
@@ -303,12 +305,14 @@ $invoiceDate = Carbon::parse($invoiceDates)->subDay();
     $page = $request->input('page', 1);
     $rows = $request->input('rows', 20);
     $customersFilter = $request->input('customers1');
+    $coaRas47 = COA::where('coa_ras', 47)->first();
+
 
     // Ambil daftar invoice unik RAS-LT
     $orderTruckingInv = OrderTrucking::with([
         'tarif.customer:id,nama',
         'jurnals' => function ($query) {
-            $query->where('coa_id', 47)
+            $query->where('coa_id',  $coaRas47->id)
                   ->where('debit', '!=', 0);
         },
     ])->where('invoice', 'like', '%RAS-LT%')
@@ -323,7 +327,7 @@ $invoiceDate = Carbon::parse($invoiceDates)->subDay();
     $orderTrucking = OrderTrucking::with([
         'tarif.customer:id,nama',
         'jurnals' => function ($query) {
-            $query->where('coa_id', 47)
+            $query->where('coa_id',  $coaRas47->id)
                   ->where('debit', '!=', 0);
         },
     ])
@@ -341,7 +345,7 @@ $invoiceDate = Carbon::parse($invoiceDates)->subDay();
     // Jurnal Debit = Nilai Invoice
     $jurnalNilaiInv = Jurnal::withTrashed()
         ->select('invoice_trucking', \DB::raw('SUM(debit) as total_debit'))
-        ->where('coa_id', 47)
+        ->where('coa_id', $coaRas47->id)
         ->whereNull('deleted_at')
         ->where('debit', '!=', 0)
         ->whereNotNull('invoice_trucking')
@@ -351,7 +355,7 @@ $invoiceDate = Carbon::parse($invoiceDates)->subDay();
 
     // Jurnal Credit = Pembayaran
     $jurnalsCredit = Jurnal::withTrashed()
-        ->where('coa_id', 47)
+        ->where('coa_id', $coaRas47->id)
         ->whereNull('deleted_at')
         ->where('credit', '!=', 0)
         ->whereIn('invoice_trucking', $orderTruckingInv)
@@ -435,6 +439,7 @@ public function data_rekap_piutang(Request $request)
     $marketing = $request->input('marketing');
     $invFilter = $request->input('inv');
     $tfMasukVal = $request->input('tf_masuk');
+    $coaRas46 = COA::where('coa_ras',46)->first();
     //  if ($tglInvFilter) {
     //     $tahun = (int) substr($tglInvFilter, 0, 4);
     //     if ($tahun < 2025) {
@@ -451,8 +456,8 @@ public function data_rekap_piutang(Request $request)
                 $query->whereNotNull('tanggal_kirim')
                       ->select('id', 'job', 'total', 'pph', 'tanggal_kirim');
             },
-            'jurnals' => function ($query) {
-                $query->where('coa_id', 46)
+            'jurnals' => function ($query) use ($coaRas46) {
+                $query->where('coa_id', $coaRas46->id)
                       ->where('debit', '!=', 0)
                       ->select('order_id', 'debit','coa_id');
             },
@@ -476,8 +481,8 @@ public function data_rekap_piutang(Request $request)
                 $query->whereNotNull('tanggal_kirim')
                       ->select('id', 'job', 'total', 'pph', 'tanggal_kirim');
             },
-            'jurnals' => function ($query) {
-                $query->where('coa_id', 46)
+            'jurnals' => function ($query) use ($coaRas46) {
+                $query->where('coa_id', $coaRas46->id)
                       ->where('debit', '!=', 0)
                      ->select('order_id', 'debit','coa_id','created_at');
             },
@@ -504,8 +509,8 @@ public function data_rekap_piutang(Request $request)
                 $query->whereNotNull('tanggal_kirim')
                       ->select('id', 'job', 'total', 'pph', 'tanggal_kirim');
             },
-            'jurnals' => function ($query) {
-                $query->where('coa_id', 46)
+            'jurnals' => function ($query) use ($coaRas46) {
+                $query->where('coa_id', $coaRas46->id)
                       ->where('debit', '!=', 0)
                       ->select('order_id', 'debit','coa_id');
             },
@@ -528,8 +533,8 @@ public function data_rekap_piutang(Request $request)
                 $query->whereNotNull('tanggal_kirim')
                       ->select('id', 'job', 'total', 'pph', 'tanggal_kirim');
             },
-            'jurnals' => function ($query) {
-                $query->where('coa_id', 46)
+            'jurnals' => function ($query) use ($coaRas46) {
+                $query->where('coa_id', $coaRas46->id)
                       ->where('debit', '!=', 0)
                       ->select('order_id', 'debit','coa_id');
             },
@@ -552,8 +557,8 @@ elseif ($tfMasukVal) {
                 $query->whereNotNull('tanggal_kirim')
                       ->select('id', 'job', 'total', 'pph', 'tanggal_kirim');
             },
-            'jurnals' => function ($query) {
-                $query->where('coa_id', 46)
+            'jurnals' => function ($query) use ($coaRas46) {
+                $query->where('coa_id', $coaRas46->id)
                       ->where('debit', '!=', 0)
                       ->select('order_id', 'debit','coa_id');
             },
@@ -576,8 +581,8 @@ elseif ($request->input('job') && (!$customersFilter1 && !$marketing)) {
             $query->whereNotNull('tanggal_kirim')
                   ->select('id', 'job', 'total', 'pph', 'tanggal_kirim', 'order_id');
         },
-        'jurnals' => function ($query) {
-            $query->where('coa_id', 46)
+        'jurnals' => function ($query) use ($coaRas46){
+            $query->where('coa_id', $coaRas46->id)
                   ->where('debit', '!=', 0)
                   ->select('order_id', 'debit', 'coa_id');
         },
@@ -607,8 +612,8 @@ elseif ($request->input('job') && (!$customersFilter1 && !$marketing)) {
             $query->whereNotNull('tanggal_kirim')
                   ->select('id', 'job', 'total', 'pph', 'tanggal_kirim', 'order_id');
         },
-        'jurnals' => function ($query) {
-            $query->where('coa_id', 46)
+        'jurnals' => function ($query) use ($coaRas46) {
+            $query->where('coa_id', $coaRas46->id)
                   ->where('debit', '!=', 0)
                   ->select('order_id', 'debit', 'coa_id');
         },
@@ -641,8 +646,8 @@ elseif ($request->input('job') && (!$customersFilter1 && !$marketing)) {
             $query->whereNotNull('tanggal_kirim')
                   ->select('id', 'job', 'total', 'pph', 'tanggal_kirim', 'order_id');
         },
-        'jurnals' => function ($query) {
-            $query->where('coa_id', 46)
+        'jurnals' => function ($query) use ($coaRas46){
+            $query->where('coa_id', $coaRas46->id)
                   ->where('debit', '!=', 0)
                   ->select('order_id', 'debit', 'coa_id');
         },
@@ -675,8 +680,8 @@ elseif ($request->input('job') && (!$customersFilter1 && !$marketing)) {
             $query->whereNotNull('tanggal_kirim')
                   ->select('id', 'job', 'total', 'pph', 'tanggal_kirim', 'order_id');
         },
-        'jurnals' => function ($query) {
-            $query->where('coa_id', 46)
+        'jurnals' => function ($query) use ($coaRas46){
+            $query->where('coa_id', $coaRas46->id)
                   ->where('debit', '!=', 0)
                   ->select('order_id', 'debit', 'coa_id');
         },
@@ -708,7 +713,7 @@ else {
 
     $jurnalNilaiInv = Jurnal::withTrashed()
     ->select('invoice', \DB::raw('SUM(debit) as total_debit'))
-    ->where('coa_id', 46)
+    ->where('coa_id', $coaRas46->id)
     ->whereNull('deleted_at')
     ->where('debit', '!=', 0)
     ->whereNotNull('invoice')
@@ -722,7 +727,7 @@ else {
     $customers = $orders->pluck('tarif.customer', 'invoice');
     // Ambil jurnal dan group by invoice
     $jurnals = Jurnal::withTrashed()
-        ->where('coa_id', 46)
+        ->where('coa_id', $coaRas46->id)
         ->whereNull('deleted_at')
         ->where('credit', '!=', 0)
         ->whereNotNull('invoice')
@@ -1146,6 +1151,7 @@ public function tujuan()
         $tipe = request('tipe') ?? 'inv';
         $months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
         $job = $year.sprintf('%02d',$month);
+        $coaRas93 = COA::where('coa_ras',93)->first(); 
         if($tipe=='inv'){
             $data = Order::whereMonth('invoice_date',$month)->where('lock_omset','!=',0)->whereYear('invoice_date',$year)->get();
         }else{
@@ -1153,20 +1159,20 @@ public function tujuan()
         }
         $ids = $data->pluck('id')->toArray();
         $coa = COA::where('is_active',1)->get();
-        $jurnal61 = Jurnal::whereIn('order_id',$ids)->where('coa_id',93)->sum('debit');
+        $jurnal61 = Jurnal::whereIn('order_id',$ids)->where('coa_id',$coaRas93->id)->sum('debit');
          $jurnalDebit = Jurnal::whereIn('order_id', $ids)
-            ->where('coa_id', 93)
+            ->where('coa_id', $coaRas93->id)
             ->sum('debit');
 
         $jurnalKredit = Jurnal::whereIn('order_id', $ids)
-            ->where('coa_id', 93)
+            ->where('coa_id', $coaRas93->id)
             ->sum('credit');
 
         $jurnal61 = $jurnalDebit - $jurnalKredit;
 
         // Ambil data jurnal
         $jurnalList61 = Jurnal::whereIn('order_id', $ids)
-            ->where('coa_id', 93)
+            ->where('coa_id', $coaRas93->id)
             ->get();
 
         // Kelompokkan berdasarkan bulan dari created_at
@@ -1192,6 +1198,7 @@ public function tujuan()
         $year = request('year') ?? date('Y');
         $month = request('month') ?? date('m');
         $tipe = request('tipe') ?? 'inv';
+        $coaRas93 = COA::where('coa_ras',93)->first(); 
         $startDate = Carbon::create(2025, 11, 1)->startOfMonth();
 $endDate = Carbon::create($year, $month, 1)->endOfMonth();
         $months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
@@ -1216,20 +1223,20 @@ if ($tipe == 'inv') {
 }
         $ids = $data->pluck('id')->toArray();
         $coa = COA::where('is_active',1)->get();
-        $jurnal61 = Jurnal::whereIn('order_id',$ids)->where('coa_id',93)->sum('debit');
+        $jurnal61 = Jurnal::whereIn('order_id',$ids)->where('coa_id',$coaRas93->id)->sum('debit');
         $jurnalDebit = Jurnal::whereIn('order_id', $ids)
-            ->where('coa_id', 93)
+            ->where('coa_id', $coaRas93->id)
             ->sum('debit');
 
         $jurnalKredit = Jurnal::whereIn('order_id', $ids)
-            ->where('coa_id', 93)
+            ->where('coa_id', $coaRas93->id)
             ->sum('credit');
 
         $jurnal61 = $jurnalDebit - $jurnalKredit;
 
         // Ambil data jurnal
         $jurnalList61 = Jurnal::whereIn('order_id', $ids)
-            ->where('coa_id', 93)
+            ->where('coa_id', $coaRas93->id)
             ->get();
 
         // Kelompokkan berdasarkan bulan dari created_at
