@@ -362,7 +362,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     })->name('get.penerima');
 
     Route::get('rekap-piutang', [LaporanController::class, 'rekap_piutang'])->name('rekap.piutang');
-    Route::get('piutang-overdue', [LaporanController::class, 'piutangOverdue'])->name('piutang.overdue');
+        Route::get('piutang-overdue', [LaporanController::class, 'piutangOverdue'])->name('piutang.overdue');
     Route::get('monitoring-subjek-bb', [LaporanController::class, 'MonitorSubjekBB'])->name('monitoring-subjek-bb');
     Route::get('jurnal/cek-coa', [JurnalController::class, 'j_cekcoa'])->name('jurnal.cekcoa');
     Route::get('data-rekap-piutang', [LaporanController::class, 'data_rekap_piutang'])->name('data-rekap.piutang');

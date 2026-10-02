@@ -1531,6 +1531,11 @@ $jurnalSelain161 = $jurnalDebitLain - $jurnalKreditLain;
         return view('admin.laporan.preinvoice', compact('data','year'));
     }
 
+    public function piutangOverdue()
+    { 
+        return view('admin.laporan.piutang-overdue');
+    }
+
     public function data_group_customer_piutang(Request $request) {
     $page = $request->input('page', 1);
     $rows = $request->input('rows', 20);
@@ -1787,7 +1792,7 @@ $jurnalSelain161 = $jurnalDebitLain - $jurnalKreditLain;
                 'total_kurang_bayar' => $totalKurangBayar,
             ]);
     }
-    
+
     public function omset_trucking()
     {
         $year = request('year') ?? date('Y');
