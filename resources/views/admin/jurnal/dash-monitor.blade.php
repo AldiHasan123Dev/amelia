@@ -120,8 +120,8 @@
 
                 <tbody>
 @php
-    $coa74 = $coa1->firstWhere('id', 74);
-    $coa75 = $coa1->firstWhere('id', 75);
+    $coa74 = $coa1->firstWhere('coa_ras', 74);
+    $coa75 = $coa1->firstWhere('coa_ras', 75);
 @endphp
 
 @foreach ($coa1 as $item)
