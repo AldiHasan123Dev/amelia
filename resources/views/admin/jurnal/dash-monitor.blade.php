@@ -262,7 +262,7 @@
 
 
         {{-- ================= COA 3 ================= --}}
-        <div class="grid-item">
+        {{-- <div class="grid-item">
 
             <table class="table-dashboard">
 
@@ -312,11 +312,11 @@
 
             </table>
 
-        </div>
+        </div> --}}
 
 
         {{-- ================= COA 4 ================= --}}
-        <div class="grid-item">
+        {{-- <div class="grid-item">
 
             <table class="table-dashboard">
 
@@ -367,7 +367,7 @@
 
             </table>
 
-        </div>
+        </div> --}}
 
 
     </div>
