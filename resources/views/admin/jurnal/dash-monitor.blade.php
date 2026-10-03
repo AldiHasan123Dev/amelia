@@ -137,10 +137,10 @@
 
     <tr>
         <td>
-            @if ($item->id == 46 && $coa74)
+            @if ($item->coa_ras == 46 && $coa74)
                 {{ $item->kode }}<br>
                 <span class="saldo-minus">{{ $coa74->kode }}</span>
-            @elseif ($item->id == 47 && $coa75)
+            @elseif ($item->coa_ras == 47 && $coa75)
                 {{ $item->kode }}<br>
                 <span class="saldo-minus">{{ $coa75->kode }}</span>
             @else
@@ -149,10 +149,10 @@
         </td>
 
         <td>
-            @if ($item->id == 46 && $coa74)
+            @if ($item->coa_ras == 46 && $coa74)
                 {{ $item->nama }}<br>
                 <span class="saldo-minus">{{ $coa74->nama }}  (Belum Teridentifikasi)</span>
-            @elseif ($item->id == 47 && $coa75)
+            @elseif ($item->coa_ras == 47 && $coa75)
                 {{ $item->nama }}<br>
                 <span class="saldo-minus">{{ $coa75->nama }} (Belum Teridentifikasi)</span>
             @else
@@ -161,7 +161,7 @@
         </td>
 
         <td class="text-right">
-            @if ($item->id == 46 && $coa74)
+            @if ($item->coa_ras == 46 && $coa74)
                 <span>
                     {{ number_format($total['selisih'], 2, ',', '.') }}
                 </span><br>
@@ -169,7 +169,7 @@
                     {{ number_format($total74['selisih'], 2, ',', '.') }}
                 </span>
 
-            @elseif ($item->id == 47 && $coa75)
+            @elseif ($item->coa_ras == 47 && $coa75)
                 <span>
                     {{ number_format($total['selisih'], 2, ',', '.') }}
                 </span><br>
