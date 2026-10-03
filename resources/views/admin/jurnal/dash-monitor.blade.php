@@ -262,113 +262,93 @@
 
 
         {{-- ================= COA 3 ================= --}}
-        {{-- <div class="grid-item">
+@if ($coa3->isNotEmpty())
+    <div class="grid-item">
+        <table class="table-dashboard">
+            <thead>
+                <tr>
+                    <th>No Akun</th>
+                    <th>Nama Akun</th>
+                    <th class="text-right">Saldo</th>
+                </tr>
+            </thead>
 
-            <table class="table-dashboard">
+            <tbody>
+                @foreach ($coa3 as $item)
+                    @php
+                        $total = $totals1[$item->id] ?? [
+                            'debit' => 0,
+                            'credit' => 0,
+                            'selisih' => 0
+                        ];
+                    @endphp
 
-                <thead>
                     <tr>
-                        <th>No Akun</th>
-                        <th>Nama Akun</th>
-                        <th class="text-right">Saldo</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                    @foreach ($coa3 as $item)
-                        @php
-                            $total = $totals1[$item->id] ?? ['debit' => 0, 'credit' => 0, 'selisih' => 0];
-                        @endphp
-
-                        <tr>
-
-                            <td>{{ $item->kode }}</td>
-
-                            <td>{{ $item->nama }}</td>
-
-                            <td class="text-right {{ $total['selisih'] < 0 ? 'saldo-minus' : '' }}">
-                                {{ number_format($total['selisih'], 2, ',', '.') }}
-                            </td>
-
-                        </tr>
-                    @endforeach
-
-                </tbody>
-
-                <tfoot>
-
-                    <tr class="table-total">
-
-                        <td colspan="2">TOTAL</td>
-
-                        <td class="text-right">
-                            {{ number_format($totalSaldoC, 2, ',', '.') }}
+                        <td>{{ $item->kode }}</td>
+                        <td>{{ $item->nama }}</td>
+                        <td class="text-right {{ $total['selisih'] < 0 ? 'saldo-minus' : '' }}">
+                            {{ number_format($total['selisih'], 2, ',', '.') }}
                         </td>
-
                     </tr>
+                @endforeach
+            </tbody>
 
-                </tfoot>
+            <tfoot>
+                <tr class="table-total">
+                    <td colspan="2">TOTAL</td>
+                    <td class="text-right">
+                        {{ number_format($totalSaldoC, 2, ',', '.') }}
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+@endif
 
-            </table>
 
-        </div> --}}
+{{-- ================= COA 4 ================= --}}
+@if ($coa4->isNotEmpty())
+    <div class="grid-item">
+        <table class="table-dashboard">
+            <thead>
+                <tr>
+                    <th>No Akun</th>
+                    <th>Nama Akun</th>
+                    <th class="text-right">Saldo</th>
+                </tr>
+            </thead>
 
+            <tbody>
+                @foreach ($coa4 as $item)
+                    @php
+                        $total = $totals1[$item->id] ?? [
+                            'debit' => 0,
+                            'credit' => 0,
+                            'selisih' => 0
+                        ];
+                    @endphp
 
-        {{-- ================= COA 4 ================= --}}
-        {{-- <div class="grid-item">
-
-            <table class="table-dashboard">
-
-                <thead>
                     <tr>
-                        <th>No Akun</th>
-                        <th>Nama Akun</th>
-                        <th class="text-right">Saldo</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                    @foreach ($coa4 as $item)
-                        @php
-                            $total = $totals1[$item->id] ?? ['debit' => 0, 'credit' => 0, 'selisih' => 0];
-                        @endphp
-
-                        <tr>
-
-                            <td>{{ $item->kode }}</td>
-
-                            <td>{{ $item->nama }}</td>
-
-
-                            <td class="text-right {{ $total['selisih'] < 0 ? 'saldo-minus' : '' }}">
-                                {{ number_format($total['selisih'], 2, ',', '.') }}
-                            </td>
-
-                        </tr>
-                    @endforeach
-
-                </tbody>
-
-                <tfoot>
-
-                    <tr class="table-total">
-
-                        <td colspan="2">TOTAL</td>
-
-                        <td class="text-right">
-                            {{ number_format($totalSaldoD, 2, ',', '.') }}
+                        <td>{{ $item->kode }}</td>
+                        <td>{{ $item->nama }}</td>
+                        <td class="text-right {{ $total['selisih'] < 0 ? 'saldo-minus' : '' }}">
+                            {{ number_format($total['selisih'], 2, ',', '.') }}
                         </td>
-
                     </tr>
+                @endforeach
+            </tbody>
 
-                </tfoot>
-
-            </table>
-
-        </div> --}}
-
+            <tfoot>
+                <tr class="table-total">
+                    <td colspan="2">TOTAL</td>
+                    <td class="text-right">
+                        {{ number_format($totalSaldoD, 2, ',', '.') }}
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+@endif
 
     </div>
 @endsection
