@@ -76,7 +76,6 @@
 
 @section('content')
     @php
-
         $totalSaldoA = $coa1->sum(fn($item) => $totals[$item->id]['selisih'] ?? 0);
         $totalSaldoB = $coa2->sum(fn($item) => $totals[$item->id]['selisih'] ?? 0);
         $totalSaldoC = $coa3->sum(fn($item) => $totals1[$item->id]['selisih'] ?? 0);

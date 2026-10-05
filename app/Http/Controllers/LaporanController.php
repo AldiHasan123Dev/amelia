@@ -2058,7 +2058,7 @@ $rekapPerBulan1 = $jurnalPerBulan1->map(function ($items, $month) {
     $startDate = '2022-01-01';
     $endDate   = Carbon::create($year, $month)->endOfMonth()->endOfDay();
 
-    $coaSubjek = COA::whereIn('id', [46,47,62,63,49,131,65,66])->get();
+    $coaSubjek = COA::whereIn('coa_ras', [46,39,62,63,49,131,65,66,19])->get();
 
     $result = [];
 
