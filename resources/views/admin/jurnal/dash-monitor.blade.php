@@ -125,7 +125,7 @@
 @endphp
 
 @foreach ($coa1 as $item)
-    @if (in_array($item->id, [74, 75]))
+    @if (in_array($item->coa_ras, [74, 75]))
         @continue
     @endif
 
