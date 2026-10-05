@@ -1278,7 +1278,7 @@ if ($tipe == 'inv') {
     $coa2 = Coa::whereIn('coa_ras', [62, 63, 131,39])->orderBy('kode')->get();
 
     $coa3 = Coa::whereIn('coa_ras', [49])->orderBy('kode')->get();
-    $coa4 = Coa::whereIn('coa_ras', [66, 190, 191])->orderBy('kode')->get();
+    $coa4 = Coa::whereIn('coa_ras', [66, 190, 191,39])->orderBy('kode')->get();
 
     // Inisialisasi
     $totals = [];
