@@ -169,14 +169,6 @@
                     {{ number_format($total74['selisih'], 2, ',', '.') }}
                 </span>
 
-            @elseif ($item->coa_ras == 47 && $coa75)
-                <span>
-                    {{ number_format($total['selisih'], 2, ',', '.') }}
-                </span><br>
-                <span class="saldo-minus">
-                    {{ number_format($total75['selisih'], 2, ',', '.') }}
-                </span>
-
             @else
                 <span class="{{ $total['selisih'] < 0 ? 'saldo-minus' : '' }}">
                     {{ number_format($total['selisih'], 2, ',', '.') }}
